@@ -1,3 +1,11 @@
+vyatta-version (1.6) trixie; urgency=medium
+
+  * Depend on base-files-vyatta (whose os-release.vyatta this package
+    diverts), so it is removed first; postrm removes its link and diversion
+    whenever they exist.
+
+ -- NuDanOS Maintainers <jon@fernandez.tech>  Fri, 02 Oct 2026 13:11:53 -0700
+
 vyatta-version (1.5) trixie; urgency=medium
 
   * Name the system NuDanOS when no OBS project parameters are present (they

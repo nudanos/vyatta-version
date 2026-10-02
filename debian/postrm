@@ -6,9 +6,12 @@ PKG=vyatta-version
 
 case "$1" in
     purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
-	if [ -e /etc/os-release.base-files-vyatta -a
-		-L /etc/os-release.vyatta ] ; then
+	# The link to our file is made by preinst; remove it, then the
+	# diversion (which renames base-files-vyatta's file back if present).
+	if [ -L /etc/os-release.vyatta ] ; then
 	    rm -f /etc/os-release.vyatta
+	fi
+	if [ "$(dpkg-divert --listpackage /etc/os-release.vyatta)" = "${PKG}" ] ; then
 	    dpkg-divert --package ${PKG} --remove --rename \
 		--divert /etc/os-release.base-files-vyatta \
 		/etc/os-release.vyatta

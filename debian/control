@@ -9,7 +9,7 @@ Vcs-Browser: https://github.com/nudanos/vyatta-version
 
 Package: vyatta-version
 Architecture: any
-Depends: ${misc:Depends}
+Depends: base-files-vyatta, ${misc:Depends}
 Section: base
 Replaces: vyatta-version, vc-version, vc2-version, devel-version
 Description: Produces version and package file
