@@ -18,9 +18,19 @@ create_os_release_vyatta () {
     local VERSION=$(scripts/get_vyatta_version --no-fallback)
     local VERSION_ID=$(echo ${VERSION} | tr -d " ")
 
-    # pick up values from base-files-vyatta
-    cat /etc/os-release.vyatta > scripts/files/os-release.vyatta-version \
-	2>/dev/null
+    # pick up values from base-files-vyatta, or its defaults when building
+    # on a host without it (the NuDanOS builder)
+    if [ -r /etc/os-release.vyatta ] ; then
+	cat /etc/os-release.vyatta > scripts/files/os-release.vyatta-version
+    else
+	cat > scripts/files/os-release.vyatta-version <<EOF
+ID=vyatta
+ID_LIKE=debian
+HOME_URL="https://github.com/nudanos"
+SUPPORT_URL="https://github.com/nudanos/distro/issues"
+BUG_REPORT_URL="https://github.com/nudanos/distro/issues"
+EOF
+    fi
 
     sed -i -e '/^PRETTY_NAME=/d' -e '/^NAME=/d' -e '/^VERSION=/d' \
 	-e '/^VERSION_ID=/d' \
