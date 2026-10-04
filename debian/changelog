@@ -1,3 +1,10 @@
+vyatta-version (1.7) trixie; urgency=medium
+
+  * postrm: keep the os-release diversion and link on upgrade and reinstall;
+    remove them only on remove, purge, abort-install and disappear
+
+ -- NuDanOS Maintainers <jon@fernandez.tech>  Sat, 03 Oct 2026 20:18:44 -0700
+
 vyatta-version (1.6) trixie; urgency=medium
 
   * Depend on base-files-vyatta (whose os-release.vyatta this package

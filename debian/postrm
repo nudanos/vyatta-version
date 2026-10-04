@@ -5,9 +5,11 @@ set -e
 PKG=vyatta-version
 
 case "$1" in
-    purge|remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+    purge|remove|abort-install|disappear)
 	# The link to our file is made by preinst; remove it, then the
 	# diversion (which renames base-files-vyatta's file back if present).
+	# Not on upgrade: the new preinst has already made both, and nothing
+	# would make them again.
 	if [ -L /etc/os-release.vyatta ] ; then
 	    rm -f /etc/os-release.vyatta
 	fi
@@ -16,6 +18,9 @@ case "$1" in
 		--divert /etc/os-release.base-files-vyatta \
 		/etc/os-release.vyatta
 	fi
+	;;
+
+    upgrade|failed-upgrade|abort-upgrade)
 	;;
 
     *)
