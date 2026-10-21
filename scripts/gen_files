@@ -13,10 +13,11 @@ get_dev_version () {
 }
 
 create_os_release_vyatta () {
-    local NAME=$(scripts/get_vyatta_version --name)
-    local PRETTY_NAME=$(scripts/get_vyatta_version --pretty_name)
-    local VERSION=$(scripts/get_vyatta_version --no-fallback)
-    local VERSION_ID=$(echo ${VERSION} | tr -d " ")
+    local NAME PRETTY_NAME VERSION VERSION_ID
+    NAME=$(scripts/get_vyatta_version --name)
+    PRETTY_NAME=$(scripts/get_vyatta_version --pretty_name)
+    VERSION=$(scripts/get_vyatta_version --no-fallback)
+    VERSION_ID=$(echo "${VERSION}" | tr -d " ")
 
     # pick up values from base-files-vyatta, or its defaults when building
     # on a host without it (the NuDanOS builder)
@@ -63,14 +64,14 @@ mk_dev_version_files () {
   echo "Description:  ${FULLVER}">>scripts/files/version
 
   #echo for debian/rules
-  echo ${VVERSION}
+  echo "${VVERSION}"
 }
 
 if [ -n "$BUILD_TIME" ]; then
   CURYEAR=$(date -d "$BUILD_TIME" -u +'%Y')
 fi
 
-: ${CURYEAR:=$(date +'%Y')}
+: "${CURYEAR:=$(date +'%Y')}"
 
 rm -rf scripts/files ; mkdir scripts/files
 create_os_release_vyatta

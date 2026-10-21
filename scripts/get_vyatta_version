@@ -4,24 +4,28 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 
-: ${TOPDIR:=/usr/src/packages}
+: "${TOPDIR:=/usr/src/packages}"
 
 get_prjconf_parameter()
 {
     PARAM=$1
     BUILDCONFIG="/.build/build.dist"
 
-    [ -e $BUILDCONFIG ] || \
-        BUILDCONFIG=$( ls -1 $TOPDIR/SOURCES/_buildconfig* | head -n1 )
+    if [ ! -e "$BUILDCONFIG" ]; then
+        # the first match, in the shell's sorted glob order
+        for BUILDCONFIG in "$TOPDIR"/SOURCES/_buildconfig*; do
+            break
+        done
+    fi
 
-    grep -E "^%$PARAM " $BUILDCONFIG | sed "s/^%$PARAM //g" | tail -n1
+    grep -E "^%$PARAM " "$BUILDCONFIG" | sed "s/^%$PARAM //g" | tail -n1
 }
 
-OPTS=$(getopt --name $(basename $0) \
+OPTS=$(getopt --name "$(basename "$0")" \
     --options "" --longoptions "no-fallback,name,pretty_name,project" \
     -- "$@") || exit $?
 
-set -- ${OPTS}
+eval set -- "${OPTS}"
 
 OPT_FALLBACK=yes
 
@@ -29,19 +33,15 @@ while [ $# -gt 0 ] ; do
     case $1 in
         --no-fallback)
             OPT_FALLBACK=
-            shift
             ;;
         --pretty_name)
             OPT_PRETTY_NAME=yes
-            shift
             ;;
         --project)
             OPT_PROJECT=yes
-            shift
             ;;
         --name)
             OPT_NAME=yes
-            shift
             ;;
         (--)
             shift
@@ -58,18 +58,18 @@ PROJECT_ID=$(get_prjconf_parameter _project)
 NAME=$(get_prjconf_parameter _vyatta_name)
 PRETTY_NAME=$(get_prjconf_parameter _vyatta_pretty_name)
 VERSION_ID=$(get_prjconf_parameter _vyatta_version_id)
-: ${VERSION_ID:=$(echo "${PROJECT_ID#*5600:}" | tr ":" " " | \
-    grep -E '^[0-9]+[0-9.]+[ 0-9RS]*$')}
+: "${VERSION_ID:=$(echo "${PROJECT_ID#*5600:}" | tr ":" " " | \
+    grep -E '^[0-9]+[0-9.]+[ 0-9RS]*$')}"
 
 if [ -n "${OPT_NAME}" ] ; then
-    echo ${NAME:-"NuDanOS"}
+    echo "${NAME:-NuDanOS}"
 elif [ -n "${OPT_PRETTY_NAME}" ] ; then
-    echo ${PRETTY_NAME:-"NuDanOS"}
+    echo "${PRETTY_NAME:-NuDanOS}"
 elif [ -n "${OPT_PROJECT}" ] ; then
-    echo ${PROJECT_ID:-"UNKNOWN"}
+    echo "${PROJECT_ID:-UNKNOWN}"
 else
-    [ -n "${OPT_FALLBACK}" ] && : ${VERSION_ID:=$(dpkg-parsechangelog | \
-	grep Version | awk '{ print $2 }')}
+    [ -n "${OPT_FALLBACK}" ] && : "${VERSION_ID:=$(dpkg-parsechangelog | \
+	grep Version | awk '{ print $2 }')}"
 
-    echo ${VERSION_ID}
+    echo "${VERSION_ID}"
 fi
