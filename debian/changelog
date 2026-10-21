@@ -1,3 +1,11 @@
+vyatta-version (1.8) trixie; urgency=medium
+
+  * Code-quality lint fixes (distro docs/porting.md): analyzer findings
+    fixed, see the git log.
+  * get_vyatta_version no longer skips the option after the first.
+
+ -- NuDanOS Maintainers <jon@fernandez.tech>  Wed, 21 Oct 2026 17:36:32 +0000
+
 vyatta-version (1.7) trixie; urgency=medium
 
   * postrm: keep the os-release diversion and link on upgrade and reinstall;
